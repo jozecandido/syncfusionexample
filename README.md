@@ -8,9 +8,9 @@ Hi. Here is the sample with the same basic structure we're dealing with.
 
  after cloning the repository, please do these steps
 
-  1- Create an database (read_db)
-  2- Update the connection string in the file src\Services.Query\appsettings.json
-  3- Run the dotnet run command within these folders:
-   - src\Web\Server
-   - src\Services.Query
-  4- Access the url localhost:5100
+  - Create an database (read_db)
+  - Update the connection string in the file src\Services.Query\appsettings.json
+  - Run the dotnet run command within these folders:
+    - src\Web\Server
+    - src\Services.Query
+  - Access the url localhost:5100
