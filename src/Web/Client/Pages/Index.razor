@@ -2,7 +2,6 @@
 
 @using Syncfusion.Blazor.Grids
 @using Syncfusion.Blazor.Data
-@inject NavigationManager NavigationManager
 
 <div class="container">
     <div class="row">
@@ -78,18 +77,6 @@
 @code {
 
     Syncfusion.Blazor.Grids.SfGrid<QueryModel.Entity> DataGrid {get; set;}
-    
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            DataGrid?.Refresh();
-        }
-        catch (Exception ex)
-        {
-        }
-
-    }
     
     public void RowDataBound(RowDataBoundEventArgs<QueryModel.Entity> Args)
     {
