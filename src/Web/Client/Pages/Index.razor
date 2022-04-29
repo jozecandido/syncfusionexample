@@ -1,0 +1,103 @@
+﻿@page "/"
+
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Data
+@inject NavigationManager NavigationManager
+
+<div class="container">
+    <div class="row">
+        @{
+            var Tool = (new List<string>() { "Search", "ColumnChooser"});
+        }
+        <SfGrid TValue="QueryModel.Entity" Toolbar=@Tool @ref="DataGrid" AllowGrouping="true" Height="600" Width="1000" EnableVirtualization="true"
+        AllowSorting="true" AllowExcelExport="true" AllowPdfExport="true" ContextMenuItems="@(new List<object>() { "AutoFit", "AutoFitAll", "SortAscending", "SortDescending","Copy", "PdfExport", "ExcelExport", "CsvExport", "FirstPage", "PrevPage","LastPage", "NextPage"})"
+            ShowColumnChooser="true" AllowSelection="true">
+            <SfDataManager AdaptorInstance="@typeof(CustomAdaptor)" Adaptor="Adaptors.CustomAdaptor"></SfDataManager>
+            <GridEvents RowDataBound="RowDataBound" TValue="QueryModel.Entity"></GridEvents>
+
+            <GridGroupSettings EnableLazyLoading="true" />
+            <GridEditSettings AllowDeleting="true" AllowEditing="true"></GridEditSettings>
+            <GridSelectionSettings CheckboxOnly="true" PersistSelection="true">
+            </GridSelectionSettings>
+
+            <GridAggregates>
+                <GridAggregate>
+                    <GridAggregateColumns>
+                        <GridAggregateColumn Field="Field1" Type="AggregateType.Count" Format="C2">
+                            <GroupCaptionTemplate>
+                                @{
+                                    var aggregate = (context as AggregateTemplateContext);
+                                    <div>
+                                        <p>Count: @aggregate.Count</p>
+                                    </div>
+                                }
+                            </GroupCaptionTemplate>
+                        </GridAggregateColumn>
+                        <GridAggregateColumn Field="Field2" Type="AggregateType.Count" Format="C2">
+                            <GroupCaptionTemplate>
+                                @{
+                                    var aggregate = (context as AggregateTemplateContext);
+                                    <div>
+                                        <p>Count: @aggregate.Count</p>
+                                    </div>
+                                }
+                            </GroupCaptionTemplate>
+                        </GridAggregateColumn>
+                    </GridAggregateColumns>
+                </GridAggregate>
+
+            </GridAggregates>
+            <GridColumns>
+                <GridColumn Type="ColumnType.CheckBox" Width="50"></GridColumn>
+                <GridColumn Field="Id" HeaderText="Id" Width="120"></GridColumn>
+                <GridColumn Field="Name" HeaderText="Name" Width="120"></GridColumn>
+                <GridColumn Field="Description" HeaderText="Description" Width="120"></GridColumn>
+                <GridColumn Field="Field1" HeaderText="Field1" Width="120">
+                    <Template>
+                            @{
+                            var changeData = (context as QueryModel.Entity);
+                            <span class="whishlist"> @changeData.Field1</span>
+                             }
+                    </Template>
+                </GridColumn>
+                <GridColumn Field="Field2" HeaderText="Field2" Width="120"></GridColumn>
+                <GridColumn Field="Field3" HeaderText="Field3" Width="120"></GridColumn>
+                <GridColumn HeaderText="Manage Records" Width="150">
+                    <GridCommandColumns>
+                        <GridCommandColumn Type="CommandButtonType.Edit" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-edit", CssClass="e-flat" })"></GridCommandColumn>
+                        <GridCommandColumn Type="CommandButtonType.Delete" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-delete", CssClass="e-flat" })"></GridCommandColumn>
+                        <GridCommandColumn Type="CommandButtonType.Save" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-save", CssClass="e-flat" })"></GridCommandColumn>
+                        <GridCommandColumn Type="CommandButtonType.Cancel" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-cancel-icon", CssClass="e-flat" })"></GridCommandColumn>
+                    </GridCommandColumns>
+                </GridColumn>
+            </GridColumns>
+        </SfGrid>
+    </div>
+</div>
+
+@code {
+
+    Syncfusion.Blazor.Grids.SfGrid<QueryModel.Entity> DataGrid {get; set;}
+    
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            DataGrid?.Refresh();
+        }
+        catch (Exception ex)
+        {
+        }
+
+    }
+    
+    public void RowDataBound(RowDataBoundEventArgs<QueryModel.Entity> Args)
+    {
+        var obj = Args.Data as QueryModel.Entity;
+        Console.WriteLine(obj);
+        if( (obj.Field2 ?? "").Contains("Field"))
+        {
+            Args.Row.AddClass(new string[] { "value-engeneering" });
+        }
+    }
+}
