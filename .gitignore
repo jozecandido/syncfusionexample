@@ -452,7 +452,3 @@ $RECYCLE.BIN/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-src/DESTINI.Estimator.Web/.vscode/launch.json
-src/DESTINI.Estimator.Web/.vscode/tasks.json
-scripts/developers/dump.rdb
-__azurite_db_table__.json
