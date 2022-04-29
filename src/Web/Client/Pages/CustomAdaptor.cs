@@ -22,56 +22,30 @@ public class CustomAdaptor : DataAdaptor
     }
     public override async Task<object> ReadAsync(DataManagerRequest dm, string key = null)
     {
-        Console.WriteLine("Read1");
+        var init = DateTime.Now;
+        Console.WriteLine("Init: " + DateTime.Now);
+
         IRemoteQueryable<QueryModel.Entity> DataSource = (IRemoteQueryable<Entity>)_queryDb.Entities;
-        Console.WriteLine("Read2");
         int count = await (DataSource as IQueryable<QueryModel.Entity>).CountAsync();
         try
         {
-            if (dm.Search != null && dm.Search.Count > 0)
-            {
-                // Searching
-                DataSource = (IRemoteQueryable<QueryModel.Entity>)DataOperations.PerformSearching(DataSource, dm.Search);
-            }
-            Console.WriteLine("Read3");
-
-            if (dm.Sorted != null && dm.Sorted.Count > 0)
-            {
-                // Sorting
-                var result = DataOperations.PerformSorting((IEnumerable)DataSource, dm.Sorted);
-                Console.WriteLine(result);
-            }
-
-            Console.WriteLine("Read4");
-
-            if (dm.Where != null && dm.Where.Count > 0)
-            {
-                // Filtering
-                DataSource = (IRemoteQueryable<QueryModel.Entity>)DataOperations.PerformFiltering(DataSource, dm.Where, dm.Where[0].Operator);
-            }
-            Console.WriteLine("Read5");
-
-            Console.WriteLine(dm.Skip);
             if (dm.Skip != 0)
             {
                 //Paging
                 DataSource = (IRemoteQueryable<QueryModel.Entity>)DataOperations.PerformSkip(DataSource, dm.Skip);
             }
-            Console.WriteLine("Read6");
-            Console.WriteLine(dm.Take);
 
             if (dm.Take != 0)
             {
                 DataSource = (IRemoteQueryable<QueryModel.Entity>)DataOperations.PerformTake(DataSource, dm.Take);
             }
-            Console.WriteLine("Read7");
 
             DataResult DataObject = new DataResult();
             if (dm.Group != null)
             {
-                var data1 = await (DataSource  as IQueryable<QueryModel.Entity>).ToListAsync();
+                var data = await (DataSource  as IQueryable<QueryModel.Entity>).ToListAsync();
 
-                IEnumerable ResultData = data1;
+                IEnumerable ResultData = data;
                 // Grouping
                 foreach (var group in dm.Group)
                 {
@@ -79,21 +53,27 @@ public class CustomAdaptor : DataAdaptor
                 }
                 DataObject.Result = ResultData;
                 DataObject.Count = count;
+
+                var end = DateTime.Now;
+                Console.WriteLine("end: " + DateTime.Now);
+                Console.WriteLine("total: " + (end-init));
+
                 return dm.RequiresCounts ? DataObject : (object)ResultData;
             }
 
             if (dm.Aggregates != null) // Aggregation
             {
-                var data1 = await (DataSource  as IQueryable<QueryModel.Entity>).ToListAsync();
-                DataObject.Result = data1;
+                var data = await (DataSource  as IQueryable<QueryModel.Entity>).ToListAsync();
+                DataObject.Result = data;
                 DataObject.Count = count;
-                DataObject.Aggregates = DataUtil.PerformAggregation(data1, dm.Aggregates);
-                Console.WriteLine("Read8");
+                DataObject.Aggregates = DataUtil.PerformAggregation(data, dm.Aggregates);
+                
+                var end = DateTime.Now;
+                Console.WriteLine("end: " + DateTime.Now);
+                Console.WriteLine("total: " + (end-init));
 
-                return dm.RequiresCounts ? DataObject : (object)data1;
+                return dm.RequiresCounts ? DataObject : (object)data;
             }
-            Console.WriteLine("Read9");
-
         }
         catch (Exception ex)
         {
@@ -101,8 +81,12 @@ public class CustomAdaptor : DataAdaptor
             Console.WriteLine(ex.StackTrace);
         }
         //var data = DataSource;
-        var data = await (DataSource as IQueryable<QueryModel.Entity>).ToListAsync();
-        return dm.RequiresCounts ? new DataResult() { Result = data, Count = count } : (object)data;
+        var result = await (DataSource as IQueryable<QueryModel.Entity>).ToListAsync();
+        
+        var mainEnd = DateTime.Now;
+        Console.WriteLine("end: " + DateTime.Now);
+        Console.WriteLine("total: " + (mainEnd-init));
+        return dm.RequiresCounts ? new DataResult() { Result = result, Count = count } : (object)result;
 
     }
 }

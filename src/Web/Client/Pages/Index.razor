@@ -10,7 +10,8 @@
         }
         <SfGrid TValue="QueryModel.Entity" Toolbar=@Tool @ref="DataGrid" AllowGrouping="true" Height="600" Width="1000" EnableVirtualization="true"
         AllowSorting="true" AllowExcelExport="true" AllowPdfExport="true" ContextMenuItems="@(new List<object>() { "AutoFit", "AutoFitAll", "SortAscending", "SortDescending","Copy", "PdfExport", "ExcelExport", "CsvExport", "FirstPage", "PrevPage","LastPage", "NextPage"})"
-            ShowColumnChooser="true" AllowSelection="true">
+            ShowColumnChooser="true" AllowSelection="true"
+            >
             <SfDataManager AdaptorInstance="@typeof(CustomAdaptor)" Adaptor="Adaptors.CustomAdaptor"></SfDataManager>
             <GridEvents RowDataBound="RowDataBound" TValue="QueryModel.Entity"></GridEvents>
 
@@ -77,7 +78,7 @@
 @code {
 
     Syncfusion.Blazor.Grids.SfGrid<QueryModel.Entity> DataGrid {get; set;}
-    
+
     public void RowDataBound(RowDataBoundEventArgs<QueryModel.Entity> Args)
     {
         var obj = Args.Data as QueryModel.Entity;
