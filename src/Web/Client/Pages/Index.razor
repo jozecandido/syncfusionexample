@@ -56,7 +56,7 @@
                     <Template>
                             @{
                             var changeData = (context as QueryModel.Entity);
-                            <span class="whishlist"> @changeData.Field1</span>
+                            <span class="field1"> @changeData.Field1</span>
                              }
                     </Template>
                 </GridColumn>
@@ -94,10 +94,9 @@
     public void RowDataBound(RowDataBoundEventArgs<QueryModel.Entity> Args)
     {
         var obj = Args.Data as QueryModel.Entity;
-        Console.WriteLine(obj);
         if( (obj.Field2 ?? "").Contains("Field"))
         {
-            Args.Row.AddClass(new string[] { "value-engeneering" });
+            Args.Row.AddClass(new string[] { "field2" });
         }
     }
 }
